@@ -4,5 +4,3 @@ module Lib
 
 someFunc :: IO ()
 someFunc = putStrLn "sdfsdf"
-
-a = 1 + "asdfas"
