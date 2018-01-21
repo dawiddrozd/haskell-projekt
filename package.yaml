@@ -20,8 +20,9 @@ extra-source-files:
 description:         Please see the README on Github at <https://github.com/githubuser/haskell-projekt#readme>
 
 dependencies:
-- base >= 4.7 && < 5
+- base
 - aeson (>=0.7.0.6 && <1.3)
+- http-conduit
 
 library:
   source-dirs: src
