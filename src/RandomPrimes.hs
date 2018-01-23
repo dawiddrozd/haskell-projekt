@@ -1,4 +1,4 @@
-module RandomPrices
+module RandomPrimes
     (
         rndPrimes
     ) where
@@ -6,7 +6,7 @@ module RandomPrices
 import System.Random
 
 isPrime :: Integer -> Bool
-isPrime k = null [ x | x <- [2..k - 1], k `mod`x  == 0]
+isPrime k = null [ x | x <- [2..k - 1], k `mod` x  == 0]
 
 rndPrimes :: Int -> IO (Integer, Integer)
 rndPrimes bits = do

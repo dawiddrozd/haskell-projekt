@@ -1,6 +1,9 @@
 module Main where
 
-import Lib
+import RandomPrimes
 
 main :: IO ()
-main = someFunc
+main = do
+    (a,b) <- rndPrimes 20
+    print a
+    print b
