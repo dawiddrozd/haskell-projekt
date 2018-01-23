@@ -1,4 +1,3 @@
-
 module Lib
     (
         randomInteger, maxExponent, maxDivider, divide, checkPrime
@@ -33,4 +32,4 @@ checkPrime n =  do
                 d = maxDivider n
             
 checkPrime2 :: Integer -> Integer -> Integer -> Bool
-checkPrime2 a b c = True
+checkPrime2 a b c = True 
