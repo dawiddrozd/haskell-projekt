@@ -11,13 +11,11 @@ getFi p q = (p-1)*(q-1)
 getN :: Integer -> Integer -> Integer
 getN p q = p * q
 
-
 getE :: Integer -> IO Integer
 getE fi =  do
     acc <- randomRIO (2,fi-1)
     if (gcd acc fi == 1) then return acc
     else getE fi
-
 
 getD' :: Integer -> Integer -> Integer
 getD' e fi = head [x | x <- [1..fi-1] , (b*x) `mod` fi == 1]
