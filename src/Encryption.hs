@@ -1,6 +1,8 @@
 module Encryption(
     encrypt,
-    decrypt
+    decrypt,
+    szyfr',
+    encryptString
 ) where
 
 --function modular_pow(base, exponent, modulus)
@@ -14,11 +16,19 @@ module Encryption(
 encrypt :: (Integer, Integer) -> Integer -> Integer
 encrypt (e, n) t = (t^e) `mod` n
 
-decrypt' :: (Integer, Integer) -> Integer -> Integer
-decrypt' (exponent,modulus) base = 
+szyfr' :: (Integer, Integer) -> Integer -> Integer
+szyfr' (exponent,modulus) base = 
     if modulus == 1 then 0
-    else foldl $ (\acc _ -> mod $ (acc*base) modulus) 1 [1..exponent]
+    else loop 0 0 where
+        loop x acc = if x == exponent
+            then
+                loop (x+1) (acc + ((acc * base) `mod` modulus))
+            else acc
         
 
 decrypt :: (Integer, Integer) -> Integer -> Integer
 decrypt (d, n) c = (c^d) `mod` n
+
+
+encryptString :: (Integer, Integer) -> String -> String
+encryptString key msg = fmap (toEnum) [fromInteger $ encrypt key (toInteger $ fromEnum x) | x <- msg] :: [Char]
