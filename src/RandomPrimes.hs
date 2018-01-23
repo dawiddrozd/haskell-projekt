@@ -1,12 +1,16 @@
 module RandomPrimes
     (
-        rndPrimes
+        rndPrimes,
+        isPrime,
     ) where
 
 import System.Random
 
+isqrt :: Integer -> Integer
+isqrt = floor . sqrt . fromIntegral
+
 isPrime :: Integer -> Bool
-isPrime k = null [ x | x <- [2..k - 1], k `mod` x  == 0]
+isPrime k = null [ x | x <- [2..isqrt k], k `mod` x  == 0]
 
 rndPrimes :: Int -> IO (Integer, Integer)
 rndPrimes bits = do
