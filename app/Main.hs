@@ -5,6 +5,7 @@ import Rsa
 import Encryption
 import Control.Monad.Fix
 import Vigenere
+import Text.Read
 
 main :: IO ()
 main = dialog
@@ -18,10 +19,11 @@ dialog = putStrLn "Choose encryption algorithm: "
 algorithmChooser :: IO ()
 algorithmChooser = fix $ \repeat -> do
     putStr "Your choice: "
-    num <- read <$> getLine
-    case num of 
-        1 -> putStrLn "Starting RSA enryption..." >> rsaEncryption
-        2 -> putStrLn "Starting Vigenere encryption..." >> vigenereCipher
+    line <- getLine
+    let maybeNum = readMaybe line :: Maybe Integer
+    case maybeNum of 
+        Just 1 -> putStrLn "Starting RSA enryption..." >> rsaEncryption
+        Just 2 -> putStrLn "Starting Vigenere encryption..." >> vigenereCipher
         _ -> do
             putStrLn "You should choose 1 or 2"
             repeat
