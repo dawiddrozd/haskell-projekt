@@ -12,7 +12,6 @@ vigenereEncryptMapping a b = toEnum ((((fromEnum a) + (fromEnum b) - 194) `mod` 
 vigenereDecryptMapping :: Char -> Char -> Char
 vigenereDecryptMapping a b = toEnum ((((fromEnum a) - (fromEnum b)) `mod` 26) + 97)
 
-
 nthElemModulo :: Integer -> [a] -> a
 nthElemModulo n xs = xs !! fromInteger (n `mod` toInteger (length xs)) 
 
