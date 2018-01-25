@@ -12,7 +12,7 @@ import Text.Read
 import System.Directory
 
 main :: IO ()
-main = defaultMain (testGroup "Our Library Tests" [test1, test2])
+main = defaultMain (testGroup "Our Library Tests" [test1])
 
 test1 = testCase "Vigenere test" (assertEqual "Should return \"test\" " "test" $ vigenereDecrypt (vigenereEncrypt "test" "dupa") "dupa")
 
