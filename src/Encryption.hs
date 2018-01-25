@@ -2,7 +2,7 @@ module Encryption(
     encrypt,
     decrypt,
     szyfr',
-    encryptString
+    rsaEncryptString
 ) where
 
 --function modular_pow(base, exponent, modulus)
@@ -30,5 +30,5 @@ decrypt :: (Integer, Integer) -> Integer -> Integer
 decrypt (d, n) c = (c^d) `mod` n
 
 
-encryptString :: (Integer, Integer) -> String -> String
-encryptString key msg = fmap (toEnum) [fromInteger $ encrypt key (toInteger $ fromEnum x) | x <- msg] :: [Char]
+rsaEncryptString :: (Integer, Integer) -> String -> String
+rsaEncryptString key msg = fmap (toEnum) [fromInteger $ encrypt key (toInteger $ fromEnum x) | x <- msg] :: [Char]

@@ -1,3 +1,5 @@
+{-#LANGUAGE ScopedTypeVariables#-}
+
 module Main where
 
 import RandomPrimes
@@ -17,90 +19,116 @@ main = do
     line <- getLine
     let maybeNum = readMaybe line :: Maybe Integer
     case maybeNum of 
-        Just 1 -> dialog
-        Just 2 -> do
-            putStr "Enter the filename: " >> getLine >>= 
-                \fileName -> case fileName of
-                    "rsa" -> decryptRsaFromFile fileName
-                    "vig" -> decryptVigenerFromFile fileName
-        _ -> putStrLn "Incorrect choice. Try again" >> main
+        Just 1 -> encryptionDialog
+        Just 2 -> decryptionDialog
 
-dialog :: IO ()
-dialog = putStrLn "Choose encryption algorithm: "
+encryptionDialog :: IO ()
+encryptionDialog = putStrLn "Choose encryption algorithm: "
     >> putStrLn "[1] RSA Encryption"
     >> putStrLn "[2] Vigenere cipher"
-    >> algorithmChooser
+    >> encryptionAlgorithmChooser
 
-algorithmChooser :: IO ()
-algorithmChooser = fix $ \repeat -> do
+
+decryptionDialog :: IO ()
+decryptionDialog = putStrLn "Choose encryption algorithm: "
+    >> putStrLn "[1] RSA Encryption"
+    >> putStrLn "[2] Vigenere cipher"
+    >> decryptionAlgorithmChooser
+
+encryptionAlgorithmChooser :: IO ()
+encryptionAlgorithmChooser = fix $ \repeat -> do
     putStr "Your choice: "
     line <- getLine
     let maybeNum = readMaybe line :: Maybe Integer
     case maybeNum of 
         Just 1 -> rsaEncryption
-        Just 2 -> vigenereCipher
+        Just 2 -> vigenereCipherEncryption
+        _ -> do
+            putStrLn "Incorrect choice. You should choose 1 or 2."
+            repeat
+
+decryptionAlgorithmChooser :: IO ()
+decryptionAlgorithmChooser = fix $ \repeat -> do
+    putStr "Your choice: "
+    line <- getLine
+    let maybeNum = readMaybe line :: Maybe Integer
+    case maybeNum of 
+        Just 1 -> rsaDecryption
+        Just 2 -> vigenereCipherDecryption
         _ -> do
             putStrLn "Incorrect choice. You should choose 1 or 2."
             repeat
 
 rsaEncryption :: IO ()
 rsaEncryption = do
-    putStr "What do you want to encrypt? "
+    putStrLn "What do you want to encrypt? "
     msg <- getLine
+    putStrLn "In which file do you want to keep your message?"
+    fileName <- getLine
     primes <- rndPrimes 10
-    let p = fst primes
-    let q = snd primes
-    keys <- publicAndPrivateKey p q
+    keys <- uncurry publicAndPrivateKey primes
     let public = fst keys
     let private = snd keys
+    putStrLn $ "public key : " ++ show public
+    putStrLn $ "private key : " ++ show  private
     putStrLn "Starting RSA enryption..."
-    let coded = encryptString public msg
-    encryptRsaToFile private coded
+    let coded = rsaEncryptString public msg
+    encryptRsaToFile coded fileName
 
-vigenereCipher :: IO ()
-vigenereCipher = do
-    putStr "What do you want to encrypt? "
+vigenereCipherEncryption :: IO ()
+vigenereCipherEncryption = do
+    putStrLn "What do you want to encrypt? "
     msg <- getLine
-    let key = "kacper"
+    putStrLn "What is your key?"
+    key <- getLine
+    putStrLn "In which file do you want to keep your message?"
+    fileName <- getLine
     putStrLn "Starting Vigenere encryption..."
     let coded = vigenereEncrypt msg key
-    encryptVigenereToFile key coded
+    encryptVigenereToFile coded fileName
 
-encryptRsaToFile :: (Integer,Integer) -> String -> IO ()
-encryptRsaToFile key encryptedMsg = do
-    let fileName = "rsa"
-    writeFile fileName $ show key
-    appendFile fileName $ "\n" ++ encryptedMsg
+
+vigenereCipherDecryption :: IO ()
+vigenereCipherDecryption = do
+    putStrLn "Choose file"
+    fileName <- getLine
+    fileExist <- doesFileExist fileName
+    if fileExist
+        then do
+            content <- readFile fileName
+            putStrLn "What is your key?"
+            key <- getLine
+            putStrLn "It's your message:"
+            putStrLn $ vigenereDecrypt content key
+
+        else do
+            putStrLn $ "File " ++ fileName ++ " does not exists!"
+
+rsaDecryption :: IO ()
+rsaDecryption = do
+    putStrLn "Choose file"
+    fileName <- getLine
+    fileExist <- doesFileExist fileName
+    if fileExist
+        then do
+            content <- readFile fileName
+            putStrLn "Pass first number in private key"
+            first :: Integer <- readLn
+            putStrLn "Pass second number"
+            second :: Integer <- readLn
+            let key = (first, second)
+            putStrLn "It's your message:"
+            putStrLn $ rsaEncryptString key content
+        else do
+            putStrLn $ "File " ++ fileName ++ " does not exists!"
+
+encryptRsaToFile :: String -> String -> IO ()
+encryptRsaToFile encryptedMsg fileName = do
+    writeFile fileName encryptedMsg
     putStrLn $ "Message encrypted using RSA algorithm in file: " ++ fileName
 
 encryptVigenereToFile :: String -> String -> IO ()
-encryptVigenereToFile key encryptedMsg = do
-    let fileName = "vig"
-    writeFile fileName key
-    appendFile fileName $ "\n" ++ encryptedMsg
+encryptVigenereToFile encryptedMsg fileName = do
+    writeFile fileName encryptedMsg
     putStrLn $ "Message encrypted in file using Vigenere algorithm in file: " ++ fileName
 
-decryptRsaFromFile :: String -> IO ()
-decryptRsaFromFile fileName = do
-    fileExist <- doesFileExist fileName
-    if not fileExist then putStrLn $ "File " ++ fileName ++ " does not exists!"
-    else do
-        content <- readFile fileName
-        let linesOfFile = lines content
-        let private = read $ linesOfFile !! 0
-        let coded = linesOfFile !! 1
-        putStr "Encrypted message: "
-        print $ encryptString private coded
-
-decryptVigenerFromFile :: String -> IO ()
-decryptVigenerFromFile fileName = do
-    fileExist <- doesFileExist fileName
-    if not fileExist then putStrLn $ "File " ++ fileName ++ " does not exists!"
-        else do
-            content <- readFile fileName
-            let linesOfFile = lines content
-            let key = linesOfFile !! 0
-            let coded = linesOfFile !! 1
-            putStr "Encrypted message: "
-            print $ vigenereDecrypt coded key
-            putStrLn "No i sie zjebalo cos "
