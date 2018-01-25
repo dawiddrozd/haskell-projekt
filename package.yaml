@@ -23,6 +23,7 @@ dependencies:
 - base
 - random
 - text
+- directory
 
 library:
   source-dirs: src
