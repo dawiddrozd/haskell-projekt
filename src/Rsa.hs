@@ -26,8 +26,7 @@ gcdExt a b = let (q, r) = a `quotRem` b
                  (s, t, g) = gcdExt b r
              in (t, s - q * t, g)
  
--- Given a and m, return Just x such that ax = 1 mod m.  If there is no such x
--- return Nothing.
+
 getD :: Integer -> Integer -> Integer
 getD a m = let (i, _, g) = gcdExt a m
              in mkPos i
