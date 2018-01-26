@@ -1,31 +1,31 @@
 module Main where
 
-import Test.Tasty
-import Test.Tasty.HUnit
+import Test.Hspec
 
 import RandomPrimes
 import Rsa
-import Encryption
-import Control.Monad.Fix
 import Vigenere
 import Text.Read
 import System.Directory
 
 main :: IO ()
-main = defaultMain (testGroup "Our Library Tests" [test1])
+main = hspec $ do
+    vigenereTest
+    primesTest
+    rsaTest
 
-test1 = testCase "Vigenere test" (assertEqual "Should return \"test\" " "test" $ vigenereDecrypt (vigenereEncrypt "test" "dupa") "dupa")
+vigenereTest :: Spec
+vigenereTest = describe "Vigenere." $
+        it "should return the same value" $ decoded `shouldBe` "test"
+            where decoded = vigenereDecrypt (vigenereEncrypt "test" "key") "key"
 
---rsaTest = do
---    primes <- rndPrimes 10
---    keys <- uncurry publicAndPrivateKey primes
---    let public = fst keys
---    let private = snd keys
---    let coded = rsaEncryptString public "test"
---    let decoded = rsaEncryptString private coded
---    putStrLn decoded
+primesTest :: Spec
+primesTest = describe "Random Primes." $
+    it "should return that number is prime" $ isPrime 7919 `shouldBe` True
 
--- chuj kurwa nie dziala. nie wiem da sie porownywac IOIOIOIOIOIO
-
-
---test2 = testCase "RSA test" (assertEqual "Should return " (putStrLn "test") rsaTest)
+rsaTest :: Spec
+rsaTest = describe "Rsa" $
+    it "should return the same message" $ "Test string" `shouldBe` decoded
+        where 
+            encrypted = rsaEncryptString (412091,557393) "Test string"
+            decoded = rsaEncryptString (190499,557393) encrypted

@@ -1,7 +1,7 @@
 module RandomPrimes
     (
         rndPrimes,
-        isPrime,
+        isPrime
     ) where
 
 import System.Random

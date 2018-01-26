@@ -24,9 +24,7 @@ dependencies:
 - random
 - text
 - directory
-- tasty
-- tasty-hunit
-- HUnit
+- hspec
 
 library:
   source-dirs: src

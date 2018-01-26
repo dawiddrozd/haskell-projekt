@@ -1,5 +1,5 @@
 module Rsa (
-    publicAndPrivateKey
+    publicAndPrivateKey, rsaEncryptString
 ) where
 
 import RandomPrimes
@@ -42,3 +42,9 @@ publicAndPrivateKey p q = do
     let publicKey = (e, n)
     let privateKey = (d, n)
     return (publicKey, privateKey)
+
+encrypt :: (Integer, Integer) -> Integer -> Integer
+encrypt (e, n) t = (t^e) `mod` n
+
+rsaEncryptString :: (Integer, Integer) -> String -> String
+rsaEncryptString key msg = fmap (toEnum) [fromInteger $ encrypt key (toInteger $ fromEnum x) | x <- msg] :: [Char]

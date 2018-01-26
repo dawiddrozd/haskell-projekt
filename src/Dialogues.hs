@@ -6,7 +6,6 @@ module Dialogues(
 
 import RandomPrimes
 import Rsa
-import Encryption
 import Control.Monad.Fix
 import Vigenere
 import Text.Read
@@ -17,12 +16,16 @@ mainDialogue = do
     putStrLn "What do you want to do?"
     putStrLn "[1] Encrypt the message."
     putStrLn "[2] Decrypt the message from the file."
-    putStr "Your choice: "
-    line <- getLine
-    let maybeNum = readMaybe line :: Maybe Integer
-    case maybeNum of 
-        Just 1 -> encryptionDialog
-        Just 2 -> decryptionDialog
+    fix $ \repeat -> do
+        putStr "Your choice: "
+        line <- getLine
+        let maybeNum = readMaybe line :: Maybe Integer
+        case maybeNum of 
+            Just 1 -> encryptionDialog
+            Just 2 -> decryptionDialog
+            _ -> do
+                putStrLn "Incorrect choice. You should choose 1 or 2."
+                repeat
 
 encryptionDialog :: IO ()
 encryptionDialog = putStrLn "Choose encryption algorithm: "
@@ -133,5 +136,3 @@ encryptVigenereToFile :: String -> String -> IO ()
 encryptVigenereToFile encryptedMsg fileName = do
     writeFile fileName encryptedMsg
     putStrLn $ "Message encrypted in file using Vigenere algorithm in file: " ++ fileName
-    
-    
