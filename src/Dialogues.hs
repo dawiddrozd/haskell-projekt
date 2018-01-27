@@ -1,16 +1,20 @@
 {-#LANGUAGE ScopedTypeVariables#-}
 
+{-|
+    Module      : Dialogues
+    Description : Module that privides support for IO operation
+-}
+
 module Dialogues(
     mainDialogue
 ) where
 
-import RandomPrimes
-import Rsa
 import Control.Monad.Fix
-import Vigenere
 import Text.Read
-import System.Directory
 
+import Encryption
+
+-- | Main function used for choose encryption/decryption
 mainDialogue :: IO ()
 mainDialogue = do
     putStrLn "What do you want to do?"
@@ -27,19 +31,22 @@ mainDialogue = do
                 putStrLn "Incorrect choice. You should choose 1 or 2."
                 repeat
 
+-- | Function that print possible encryption methods for encryption choice
 encryptionDialog :: IO ()
 encryptionDialog = putStrLn "Choose encryption algorithm: "
     >> putStrLn "[1] RSA Encryption"
     >> putStrLn "[2] Vigenere cipher"
     >> encryptionAlgorithmChooser
 
-
+-- | Function that print possible decryption methods for decryption choice
 decryptionDialog :: IO ()
-decryptionDialog = putStrLn "Choose encryption algorithm: "
+decryptionDialog = putStrLn "Choose decryption algorithm: "
     >> putStrLn "[1] RSA Encryption"
     >> putStrLn "[2] Vigenere cipher"
     >> decryptionAlgorithmChooser
 
+-- | Function used for choose encryption algorithm
+-- provides error handling when given wrong data
 encryptionAlgorithmChooser :: IO ()
 encryptionAlgorithmChooser = fix $ \repeat -> do
     putStr "Your choice: "
@@ -52,6 +59,8 @@ encryptionAlgorithmChooser = fix $ \repeat -> do
             putStrLn "Incorrect choice. You should choose 1 or 2."
             repeat
 
+-- | Function used for choose decryption algorithm
+-- provides error handling when given wrong data
 decryptionAlgorithmChooser :: IO ()
 decryptionAlgorithmChooser = fix $ \repeat -> do
     putStr "Your choice: "
@@ -63,76 +72,3 @@ decryptionAlgorithmChooser = fix $ \repeat -> do
         _ -> do
             putStrLn "Incorrect choice. You should choose 1 or 2."
             repeat
-
-rsaEncryption :: IO ()
-rsaEncryption = do
-    putStrLn "What do you want to encrypt? "
-    msg <- getLine
-    putStrLn "In which file do you want to keep your message?"
-    fileName <- getLine
-    primes <- rndPrimes 10
-    keys <- uncurry publicAndPrivateKey primes
-    let public = fst keys
-    let private = snd keys
-    putStrLn $ "public key : " ++ show public
-    putStrLn $ "private key : " ++ show  private
-    putStrLn "Starting RSA enryption..."
-    let coded = rsaEncryptString public msg
-    encryptRsaToFile coded fileName
-
-vigenereCipherEncryption :: IO ()
-vigenereCipherEncryption = do
-    putStrLn "What do you want to encrypt? "
-    msg <- getLine
-    putStrLn "What is your key?"
-    key <- getLine
-    putStrLn "In which file do you want to keep your message?"
-    fileName <- getLine
-    putStrLn "Starting Vigenere encryption..."
-    let coded = vigenereEncrypt msg key
-    encryptVigenereToFile coded fileName
-
-
-vigenereCipherDecryption :: IO ()
-vigenereCipherDecryption = do
-    putStrLn "Choose file"
-    fileName <- getLine
-    fileExist <- doesFileExist fileName
-    if fileExist
-        then do
-            content <- readFile fileName
-            putStrLn "What is your key?"
-            key <- getLine
-            putStrLn "It's your message:"
-            putStrLn $ vigenereDecrypt content key
-
-        else do
-            putStrLn $ "File " ++ fileName ++ " does not exists!"
-
-rsaDecryption :: IO ()
-rsaDecryption = do
-    putStrLn "Choose file"
-    fileName <- getLine
-    fileExist <- doesFileExist fileName
-    if fileExist
-        then do
-            content <- readFile fileName
-            putStrLn "Pass first number in private key"
-            first :: Integer <- readLn
-            putStrLn "Pass second number"
-            second :: Integer <- readLn
-            let key = (first, second)
-            putStrLn "It's your message:"
-            putStrLn $ rsaEncryptString key content
-        else do
-            putStrLn $ "File " ++ fileName ++ " does not exists!"
-
-encryptRsaToFile :: String -> String -> IO ()
-encryptRsaToFile encryptedMsg fileName = do
-    writeFile fileName encryptedMsg
-    putStrLn $ "Message encrypted using RSA algorithm in file: " ++ fileName
-
-encryptVigenereToFile :: String -> String -> IO ()
-encryptVigenereToFile encryptedMsg fileName = do
-    writeFile fileName encryptedMsg
-    putStrLn $ "Message encrypted in file using Vigenere algorithm in file: " ++ fileName
