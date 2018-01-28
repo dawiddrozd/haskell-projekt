@@ -7,6 +7,7 @@ module Vigenere(
     vigenereEncryptMapping,
     vigenereDecryptMapping,
     addElems,
+    nthElemModulo,
     vigenereEncrypt,
     vigenereDecrypt
 ) where

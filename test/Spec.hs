@@ -1,12 +1,12 @@
 module Main where
 
-import Test.Hspec
+import Test.HUnit
 
 import RandomPrimes
-import Test.Quick
+import Quick
+import HUnit
 
-main :: IO ()
-main = hspec $ do
-    vigenereTest
-    primesTest
-    rsaTest
+--main :: IO ()
+main = do
+    runTestTT HUnit.unitTests
+    Quick.runTests
