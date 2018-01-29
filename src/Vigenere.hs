@@ -12,21 +12,32 @@ module Vigenere(
     vigenereDecrypt
 ) where
 
-
-vigenereEncryptMapping :: Char -> Char -> Char
+-- | Function that mapps maps char with key char to encrypted char 
+vigenereEncryptMapping :: 
+    Char    -- ^ char to encrypt
+    -> Char -- ^ key char
+    -> Char -- ^ encrypted char
 vigenereEncryptMapping a b = toEnum ((fromEnum a) + (fromEnum b))
 
-vigenereDecryptMapping :: Char -> Char -> Char
+-- | Function that decrypts char using key char
+vigenereDecryptMapping :: 
+    Char    -- ^ char to decrypt 
+    -> Char -- ^ key char
+    -> Char -- ^ decrypted char
 vigenereDecryptMapping a b = toEnum ((fromEnum a) - (fromEnum b))
 
-nthElemModulo :: Integer -> [a] -> a
+-- | Function that return element of index n mod (length xs)
+nthElemModulo :: 
+    Integer -- n 
+    -> [a]  -- list
+    -> a    -- element of index n mod (length xs)
 nthElemModulo n xs = xs !! fromInteger (n `mod` toInteger (length xs)) 
 
--- | function that replicates string untill it's length is bigger than n
+-- | Function that doubles length of list untill it's length is bigger than n
 addElems :: 
     Integer -- ^ Number n
-    -> [a] -- ^ Array for replication
-    -> [a] -- ^ Replicated array
+    -> [a] -- ^ list for replication
+    -> [a] -- ^ Replicated list
 addElems n xs = loop xs where
      loop acc = if (length acc) > (fromInteger n)
             then acc

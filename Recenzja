@@ -1,0 +1,10 @@
+Recenzja - https://github.com/Codetype/ProjectHaskell
+
+Projekt dotyczy implementacji dwóch rodzajów stosu. Jest napisany bardzo przejrzyście,
+bez problemów mozemy zorientować się jakie funkcje oferuje konkretny moduł. Dzięki dokumentacji
+nie mieliśmy problemów z ich analizą co bardzo ułatwiło zapoznanie się z projektem. Funkcje opisane
+są jasno i jednoznacznie, zgodnie ze standardem Haddock. Całość została podzielona w sensowny sposób
+na moduły, wykorzystano równiez narzędzie Stack. 
+Na szczególną uwagę zasługują testy, projekt zawiera testy jednostkowe oraz parametryczne QuickCheck,
+kazda z funkcji programu jest osobno testowana, widać ze poświęcono im sporo pracy. Przy rozbudowywaniu
+projektu zdecydowanie nie byłoby problemów z testowaniem wcześniejszych funkcjonalności
